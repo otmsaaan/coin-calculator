@@ -12,7 +12,7 @@ input{width:82px;padding:8px;border:1px solid #ccc;border-radius:9px;font-size:1
 .line{display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:700;font-size:13px}.line input{margin-left:auto;width:110px}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.stat{background:#f0f2f6;border-radius:12px;padding:11px}
 .small{font-size:12px;color:#666}.big{font-size:20px;font-weight:800}
-button{border:0;border-radius:10px;padding:10px 13px;margin:10px 5px 0 0;font-weight:700;font-size:14px;background:#e8ebf1;cursor:pointer}.primary{background:#222;color:#fff}
+button{border:0;border-radius:10px;padding:11px 13px;margin:10px 5px 0 0;font-weight:700;font-size:14px;background:#e8ebf1;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.6}.primary{background:#222;color:#fff}
 textarea{width:100%;min-height:70px;margin-top:10px;padding:9px;border:1px solid #ccc;border-radius:10px;font:14px system-ui}
 .set{border:1px solid #e1e4ea;border-radius:12px;padding:11px;margin-top:8px}.set h3{margin:0 0 6px;font-size:16px}ul{margin:5px 0;padding-left:20px}.ok{font-weight:700}.bad{color:#b42318;font-weight:700}
 @media(max-width:480px){.wrap{padding:9px}.card{padding:12px}input{width:70px}}
@@ -39,7 +39,7 @@ textarea{width:100%;min-height:70px;margin-top:10px;padding:9px;border:1px solid
 <tr><td>シカ角</td><td>1,680円</td><td><input id="q7" type="number" min="0" value="0"></td><td id="s7">0円</td></tr></tbody></table>
 <div class="stats"><div class="stat"><div class="small">総額</div><div class="big" id="total">0円</div></div>
 <div class="stat"><div class="small">理論上の最大回数</div><div class="big" id="upper">0回</div></div></div>
-<button class="primary" onclick="solve()">🪙 最適計算</button><button onclick="makeNumbers()">数字8個を作る</button><button onclick="clearAll()">クリア</button>
+<button id="solveBtn" class="primary" onclick="solve()">🪙 最適計算</button><div id="status" class="small" style="margin-top:8px"></div><button onclick="makeNumbers()">数字8個を作る</button><button onclick="clearAll()">クリア</button>
 <textarea id="numbers" placeholder="数字8個を貼り付けてもOK&#10;例：44 44 20 20 40 10 10 20"></textarea>
 <button onclick="loadNumbers()">↑ 数字8個を入力</button><div id="result"></div></div>
 <div class="card small"><b>入力順</b><br>①ライオン皮　②ライオン肉　③イノシシ皮　④イノシシ肉<br>⑤イノシシ牙　⑥シカ皮　⑦シカ肉　⑧シカ角</div>
@@ -57,18 +57,97 @@ function resetSettings(){DEFAULT.forEach((x,i)=>q("p"+i).value=x);q("threshold")
 function loadNumbers(){let a=(q("numbers").value.match(/\d+/g)||[]).map(Number);if(a.length!==8)return alert("数字を8個入れてね。");a.forEach((x,i)=>q("q"+i).value=x);update()}
 function makeNumbers(){q("numbers").value=C().join(" ")}
 function clearAll(){for(let i=0;i<8;i++)q("q"+i).value=0;q("numbers").value="";q("result").innerHTML="";update()}
-function verify(gs,init,p,min){if(gs.some(g=>V(g,p)<min))return false;let u=Array(8).fill(0);gs.forEach(g=>g.forEach((x,i)=>u[i]+=x));return u.every((x,i)=>x===init[i])}
-function build(init,k,p,min){
- let gs=Array.from({length:k},()=>Array(8).fill(0)),s=Array(k).fill(0),ord=[0,1,4,2,3,5,7,6];
- for(let type of ord){let n=init[type],b=Math.floor(n/k),r=n%k,idx=[...Array(k).keys()].sort((a,b)=>s[a]-s[b]);for(let j=0;j<k;j++){gs[idx[j]][type]=b;s[idx[j]]+=b*p[type]}for(let j=0;j<r;j++){gs[idx[j]][type]++;s[idx[j]]+=p[type]}}
- if(verify(gs,init,p,min))return gs;
- gs=Array.from({length:k},()=>Array(8).fill(0));s=Array(k).fill(0);let nodes=0,memo=new Set();
- function rv(pos,r){let z=0;for(let a=pos;a<ord.length;a++)z+=r[ord[a]]*p[ord[a]];return z}
- function rec(pos,r){if(++nodes>700000)return null;if(pos===ord.length)return verify(gs,init,p,min)?gs.map(x=>x.slice()):null;let d=s.reduce((z,x)=>z+(x<min?min-x:0),0);if(d>rv(pos,r))return null;let key=pos+"|"+r.join(",")+"|"+s.slice().sort((a,b)=>a-b).join(",");if(memo.has(key))return null;memo.add(key);let type=ord[pos],n=r[type],price=p[type],a=Array(k).fill(0),seen=new Set();
- function dist(g,left){if(g===k-1){a[g]=left;let ns=s.slice();for(let j=0;j<k;j++)ns[j]+=a[j]*price;let sig=ns.slice().sort((x,y)=>x-y).join(",");if(seen.has(sig))return null;seen.add(sig);for(let j=0;j<k;j++){gs[j][type]=a[j];s[j]=ns[j]}let z=rec(pos+1,r);if(z)return z;for(let j=0;j<k;j++)s[j]-=a[j]*price;return null}let og=[...Array(k).keys()].sort((x,y)=>(min-s[y])-(min-s[x])),target=og[g];for(let x=0;x<=left;x++){a[target]=x;let z=dist(g+1,left-x);if(z)return z}return null}
- return dist(0,n)}
- return rec(0,init.slice())
+function verify(gs,init,p,min){
+  if(gs.some(g=>V(g,p)<min)) return false;
+  const used=Array(8).fill(0);
+  gs.forEach(g=>g.forEach((x,i)=>used[i]+=x));
+  return used.every((x,i)=>x===init[i]);
 }
-function solve(){let init=C(),p=P(),min=L()+1,T=V(init,p);if(T<min)return q("result").innerHTML='<div class="set bad">総額がコイン獲得ラインに届きません。</div>';let k=Math.floor(T/min),ans=null;while(k>0&&!ans){ans=build(init,k,p,min);k--}if(!ans)return q("result").innerHTML='<div class="set bad">組み合わせを見つけられませんでした。</div>';ans.sort((a,b)=>V(a,p)-V(b,p));let out='<div class="set"><b>🪙 '+ans.length+'セット</b><br><span class="ok">全アイテム使い切り確認済み</span></div>';ans.forEach((g,i)=>{out+='<div class="set"><h3>🪙 '+(i+1)+'セット目：'+V(g,p).toLocaleString()+'円</h3><ul>';g.forEach((x,j)=>{if(x)out+='<li>'+NAMES[j]+' × '+x+'</li>'});out+='</ul></div>'});q("result").innerHTML=out}
+
+function solve(){
+  const btn=q("solveBtn"), status=q("status");
+  const init=C(), p=P(), min=L()+1, T=V(init,p);
+  status.textContent="";
+  if(T<min){
+    q("result").innerHTML='<div class="set bad">総額がコイン獲得ラインに届きません。</div>';
+    return;
+  }
+
+  let k=Math.floor(T/min), answer=null;
+  btn.disabled=true;
+  btn.textContent="🧮 計算中…";
+  status.textContent="組み合わせを計算しています…";
+
+  setTimeout(()=>{
+    while(k>0 && !answer){
+      answer=buildFast(init,k,p,min);
+      if(!answer) k--;
+    }
+
+    btn.disabled=false;
+    btn.textContent="🪙 最適計算";
+    status.textContent="";
+
+    if(!answer){
+      q("result").innerHTML='<div class="set bad">組み合わせを見つけられませんでした。</div>';
+      return;
+    }
+
+    answer.sort((a,b)=>V(a,p)-V(b,p));
+    let out='<div class="set"><b>🪙 '+answer.length+'セット</b><br><span class="ok">全アイテム使い切り確認済み</span></div>';
+    answer.forEach((g,i)=>{
+      out+='<div class="set"><h3>🪙 '+(i+1)+'セット目：'+V(g,p).toLocaleString()+'円</h3><ul>';
+      g.forEach((x,j)=>{if(x) out+='<li>'+NAMES[j]+' × '+x+'</li>'});
+      out+='</ul></div>';
+    });
+    q("result").innerHTML=out;
+  },50);
+}
+
+function buildFast(init,k,p,min){
+  let gs=Array.from({length:k},()=>Array(8).fill(0));
+  let sums=Array(k).fill(0);
+  const order=[0,1,4,2,3,5,7,6];
+
+  for(const type of order){
+    const n=init[type], price=p[type], base=Math.floor(n/k), rem=n%k;
+    for(let g=0;g<k;g++){
+      gs[g][type]=base;
+      sums[g]+=base*price;
+    }
+    let idx=[...Array(k).keys()].sort((a,b)=>sums[a]-sums[b]);
+    for(let j=0;j<rem;j++){
+      const g=idx[j];
+      gs[g][type]++;
+      sums[g]+=price;
+    }
+  }
+
+  // Move individual items from richer sets to poorer sets while keeping donors above the line.
+  for(let pass=0;pass<k*30;pass++){
+    let poor=[...Array(k).keys()].filter(g=>sums[g]<min).sort((a,b)=>sums[a]-sums[b]);
+    if(!poor.length) break;
+    const to=poor[0];
+    let best=null;
+
+    for(let from=0;from<k;from++){
+      if(from===to) continue;
+      for(let i=0;i<8;i++){
+        const price=p[i];
+        if(gs[from][i]<=0 || sums[from]-price<min) continue;
+        const score=Math.abs((sums[to]+price)-min)+Math.abs((sums[from]-price)-min);
+        if(!best || score<best.score) best={from,i,score};
+      }
+    }
+    if(!best) break;
+    gs[best.from][best.i]--;
+    gs[to][best.i]++;
+    sums[best.from]-=p[best.i];
+    sums[to]+=p[best.i];
+  }
+
+  return verify(gs,init,p,min)?gs:null;
+}
+
 update();
 </script></body></html>
