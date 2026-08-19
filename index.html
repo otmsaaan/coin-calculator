@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>70,000円コイン計算ツール</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f6fa;color:#222;font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif}
+.wrap{max-width:760px;margin:auto;padding:14px}.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 20px #0001}
+h1{font-size:23px;margin:0 0 5px}.sub{color:#666;font-size:14px}h2{font-size:17px;margin:18px 0 9px}
+table{width:100%;border-collapse:collapse}th,td{padding:8px 4px;border-bottom:1px solid #eee;text-align:right}th:first-child,td:first-child{text-align:left}
+input{width:82px;padding:8px;border:1px solid #ccc;border-radius:9px;font-size:16px;text-align:right}
+.settings{background:#f7f8fb;padding:12px;border-radius:13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid label{font-size:12px;color:#666}.grid input{display:block;width:100%;margin-top:3px}
+.line{display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:700;font-size:13px}.line input{margin-left:auto;width:110px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.stat{background:#f0f2f6;border-radius:12px;padding:11px}
+.small{font-size:12px;color:#666}.big{font-size:20px;font-weight:800}
+button{border:0;border-radius:10px;padding:10px 13px;margin:10px 5px 0 0;font-weight:700;font-size:14px;background:#e8ebf1;cursor:pointer}.primary{background:#222;color:#fff}
+textarea{width:100%;min-height:70px;margin-top:10px;padding:9px;border:1px solid #ccc;border-radius:10px;font:14px system-ui}
+.set{border:1px solid #e1e4ea;border-radius:12px;padding:11px;margin-top:8px}.set h3{margin:0 0 6px;font-size:16px}ul{margin:5px 0;padding-left:20px}.ok{font-weight:700}.bad{color:#b42318;font-weight:700}
+@media(max-width:480px){.wrap{padding:9px}.card{padding:12px}input{width:70px}}
+</style></head>
+<body><div class="wrap"><div class="card">
+<h1>🪙 70,000円コイン計算ツール</h1><p class="sub">個数を入力して「最適計算」。売却額とコイン獲得ラインも変更できます。</p>
+<h2>⚙️ 売却額・コイン条件</h2><div class="settings"><div class="grid"><label>ライオン皮<input id="p0" type="number" min="0" value="12000"></label>
+<label>ライオン肉<input id="p1" type="number" min="0" value="7200"></label>
+<label>イノシシ皮<input id="p2" type="number" min="0" value="2160"></label>
+<label>イノシシ肉<input id="p3" type="number" min="0" value="1680"></label>
+<label>イノシシ牙<input id="p4" type="number" min="0" value="1920"></label>
+<label>シカ皮<input id="p5" type="number" min="0" value="1680"></label>
+<label>シカ肉<input id="p6" type="number" min="0" value="1200"></label>
+<label>シカ角<input id="p7" type="number" min="0" value="1680"></label></div>
+<div class="line">🪙 コイン獲得ライン <input id="threshold" type="number" min="0" value="70000"> 円以上</div>
+<button onclick="resetSettings()">初期値に戻す</button></div>
+<h2>📦 個数</h2><table><thead><tr><th>アイテム</th><th>売却額</th><th>個数</th><th>小計</th></tr></thead><tbody><tr><td>ライオン皮</td><td>12,000円</td><td><input id="q0" type="number" min="0" value="0"></td><td id="s0">0円</td></tr>
+<tr><td>ライオン肉</td><td>7,200円</td><td><input id="q1" type="number" min="0" value="0"></td><td id="s1">0円</td></tr>
+<tr><td>イノシシ皮</td><td>2,160円</td><td><input id="q2" type="number" min="0" value="0"></td><td id="s2">0円</td></tr>
+<tr><td>イノシシ肉</td><td>1,680円</td><td><input id="q3" type="number" min="0" value="0"></td><td id="s3">0円</td></tr>
+<tr><td>イノシシ牙</td><td>1,920円</td><td><input id="q4" type="number" min="0" value="0"></td><td id="s4">0円</td></tr>
+<tr><td>シカ皮</td><td>1,680円</td><td><input id="q5" type="number" min="0" value="0"></td><td id="s5">0円</td></tr>
+<tr><td>シカ肉</td><td>1,200円</td><td><input id="q6" type="number" min="0" value="0"></td><td id="s6">0円</td></tr>
+<tr><td>シカ角</td><td>1,680円</td><td><input id="q7" type="number" min="0" value="0"></td><td id="s7">0円</td></tr></tbody></table>
+<div class="stats"><div class="stat"><div class="small">総額</div><div class="big" id="total">0円</div></div>
+<div class="stat"><div class="small">理論上の最大回数</div><div class="big" id="upper">0回</div></div></div>
+<button class="primary" onclick="solve()">🪙 最適計算</button><button onclick="makeNumbers()">数字8個を作る</button><button onclick="clearAll()">クリア</button>
+<textarea id="numbers" placeholder="数字8個を貼り付けてもOK&#10;例：44 44 20 20 40 10 10 20"></textarea>
+<button onclick="loadNumbers()">↑ 数字8個を入力</button><div id="result"></div></div>
+<div class="card small"><b>入力順</b><br>①ライオン皮　②ライオン肉　③イノシシ皮　④イノシシ肉<br>⑤イノシシ牙　⑥シカ皮　⑦シカ肉　⑧シカ角</div>
+</div>
+<script>
+const NAMES=["ライオン皮", "ライオン肉", "イノシシ皮", "イノシシ肉", "イノシシ牙", "シカ皮", "シカ肉", "シカ角"],DEFAULT=[12000, 7200, 2160, 1680, 1920, 1680, 1200, 1680];
+function q(id){return document.getElementById(id)}
+function P(){return NAMES.map((_,i)=>Math.max(0,+q("p"+i).value||0))}
+function C(){return NAMES.map((_,i)=>Math.max(0,+q("q"+i).value||0))}
+function L(){return Math.max(0,+q("threshold").value||0)}
+function V(g,p=P()){return g.reduce((s,x,i)=>s+x*p[i],0)}
+function update(){let c=C(),p=P(),t=V(c,p);c.forEach((x,i)=>q("s"+i).textContent=(x*p[i]).toLocaleString()+"円");q("total").textContent=t.toLocaleString()+"円";q("upper").textContent=Math.floor(t/(L()+1))+"回"}
+document.querySelectorAll("input").forEach(x=>x.addEventListener("input",update));
+function resetSettings(){DEFAULT.forEach((x,i)=>q("p"+i).value=x);q("threshold").value=70000;update()}
+function loadNumbers(){let a=(q("numbers").value.match(/\d+/g)||[]).map(Number);if(a.length!==8)return alert("数字を8個入れてね。");a.forEach((x,i)=>q("q"+i).value=x);update()}
+function makeNumbers(){q("numbers").value=C().join(" ")}
+function clearAll(){for(let i=0;i<8;i++)q("q"+i).value=0;q("numbers").value="";q("result").innerHTML="";update()}
+function verify(gs,init,p,min){if(gs.some(g=>V(g,p)<min))return false;let u=Array(8).fill(0);gs.forEach(g=>g.forEach((x,i)=>u[i]+=x));return u.every((x,i)=>x===init[i])}
+function build(init,k,p,min){
+ let gs=Array.from({length:k},()=>Array(8).fill(0)),s=Array(k).fill(0),ord=[0,1,4,2,3,5,7,6];
+ for(let type of ord){let n=init[type],b=Math.floor(n/k),r=n%k,idx=[...Array(k).keys()].sort((a,b)=>s[a]-s[b]);for(let j=0;j<k;j++){gs[idx[j]][type]=b;s[idx[j]]+=b*p[type]}for(let j=0;j<r;j++){gs[idx[j]][type]++;s[idx[j]]+=p[type]}}
+ if(verify(gs,init,p,min))return gs;
+ gs=Array.from({length:k},()=>Array(8).fill(0));s=Array(k).fill(0);let nodes=0,memo=new Set();
+ function rv(pos,r){let z=0;for(let a=pos;a<ord.length;a++)z+=r[ord[a]]*p[ord[a]];return z}
+ function rec(pos,r){if(++nodes>700000)return null;if(pos===ord.length)return verify(gs,init,p,min)?gs.map(x=>x.slice()):null;let d=s.reduce((z,x)=>z+(x<min?min-x:0),0);if(d>rv(pos,r))return null;let key=pos+"|"+r.join(",")+"|"+s.slice().sort((a,b)=>a-b).join(",");if(memo.has(key))return null;memo.add(key);let type=ord[pos],n=r[type],price=p[type],a=Array(k).fill(0),seen=new Set();
+ function dist(g,left){if(g===k-1){a[g]=left;let ns=s.slice();for(let j=0;j<k;j++)ns[j]+=a[j]*price;let sig=ns.slice().sort((x,y)=>x-y).join(",");if(seen.has(sig))return null;seen.add(sig);for(let j=0;j<k;j++){gs[j][type]=a[j];s[j]=ns[j]}let z=rec(pos+1,r);if(z)return z;for(let j=0;j<k;j++)s[j]-=a[j]*price;return null}let og=[...Array(k).keys()].sort((x,y)=>(min-s[y])-(min-s[x])),target=og[g];for(let x=0;x<=left;x++){a[target]=x;let z=dist(g+1,left-x);if(z)return z}return null}
+ return dist(0,n)}
+ return rec(0,init.slice())
+}
+function solve(){let init=C(),p=P(),min=L()+1,T=V(init,p);if(T<min)return q("result").innerHTML='<div class="set bad">総額がコイン獲得ラインに届きません。</div>';let k=Math.floor(T/min),ans=null;while(k>0&&!ans){ans=build(init,k,p,min);k--}if(!ans)return q("result").innerHTML='<div class="set bad">組み合わせを見つけられませんでした。</div>';ans.sort((a,b)=>V(a,p)-V(b,p));let out='<div class="set"><b>🪙 '+ans.length+'セット</b><br><span class="ok">全アイテム使い切り確認済み</span></div>';ans.forEach((g,i)=>{out+='<div class="set"><h3>🪙 '+(i+1)+'セット目：'+V(g,p).toLocaleString()+'円</h3><ul>';g.forEach((x,j)=>{if(x)out+='<li>'+NAMES[j]+' × '+x+'</li>'});out+='</ul></div>'});q("result").innerHTML=out}
+update();
+</script></body></html>
