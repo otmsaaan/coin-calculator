@@ -1,183 +1,116 @@
 <!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#222222">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="コイン計算">
-<link rel="manifest" href="manifest.webmanifest">
-<title>70,000円コイン計算ツール</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#222222"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="コイン計算"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><title>70,000円コイン計算ツール</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#f5f6fa;color:#222;font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif}
-.wrap{max-width:760px;margin:auto;padding:14px}
-.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 20px #0001}
-h1{font-size:23px;margin:0 0 5px}.sub{color:#666;font-size:14px}
-h2{font-size:17px;margin:18px 0 9px}
-table{width:100%;border-collapse:collapse}
-th,td{padding:8px 4px;border-bottom:1px solid #eee;text-align:right}
-th:first-child,td:first-child{text-align:left}
+*{box-sizing:border-box}body{margin:0;background:#f5f6fa;color:#222;font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif}
+.wrap{max-width:760px;margin:auto;padding:14px}.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 20px #0001}
+h1{font-size:23px;margin:0 0 5px}.sub{color:#666;font-size:14px}h2{font-size:17px;margin:18px 0 9px}
+table{width:100%;border-collapse:collapse}th,td{padding:8px 4px;border-bottom:1px solid #eee;text-align:right}th:first-child,td:first-child{text-align:left}
 input{width:82px;padding:8px;border:1px solid #ccc;border-radius:9px;font-size:16px;text-align:right}
-.settings{background:#f7f8fb;padding:12px;border-radius:13px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.settings{background:#f7f8fb;padding:12px;border-radius:13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .grid label{font-size:12px;color:#666}.grid input{display:block;width:100%;margin-top:3px}
-.line{display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:700;font-size:13px}
-.line input{margin-left:auto;width:110px}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
-.stat{background:#f0f2f6;border-radius:12px;padding:11px}
+.line{display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:700;font-size:13px}.line input{margin-left:auto;width:110px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.stat{background:#f0f2f6;border-radius:12px;padding:11px}
 .small{font-size:12px;color:#666}.big{font-size:20px;font-weight:800}
-button{border:0;border-radius:10px;padding:10px 13px;margin:10px 5px 0 0;font-weight:700;font-size:14px;background:#e8ebf1;cursor:pointer}
-.primary{background:#222;color:#fff}
+button{border:0;border-radius:10px;padding:10px 13px;margin:10px 5px 0 0;font-weight:700;font-size:14px;background:#e8ebf1;cursor:pointer}.primary{background:#222;color:#fff}
 textarea{width:100%;min-height:70px;margin-top:10px;padding:9px;border:1px solid #ccc;border-radius:10px;font:14px system-ui}
-.set{border:1px solid #e1e4ea;border-radius:12px;padding:11px;margin-top:8px}
-.set h3{margin:0 0 6px;font-size:16px}
-ul{margin:5px 0;padding-left:20px}
-.ok{font-weight:700}.bad{color:#b42318;font-weight:700}
-.result-head{background:#f7f8fb;border-radius:12px;padding:11px;margin-top:10px}
-.sale-check{display:flex;align-items:center;gap:8px;margin-top:10px;padding:9px;border-radius:9px;background:#f7f8fb;font-weight:700}
-.sale-check input{width:20px;height:20px;margin:0}
-.set.sold{opacity:.58;background:#f2f2f2}
-.set.sold h3,.set.sold li{text-decoration:line-through}
-.progress{font-size:13px;color:#555;margin-top:5px}
-@media(max-width:480px){
- .wrap{padding:9px}.card{padding:12px}input{width:70px}
- .grid{gap:6px}.set{padding:10px}
-}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="card">
-<h1>🪙 70,000円コイン計算ツール</h1>
-<p class="sub">70,000円以上で、できるだけ70,000円に近い組み合わせを作ります。余ったアイテムは残してOK！</p>
-
-<h2>⚙️ 売却額・コイン条件</h2>
-<div class="settings">
-<div class="grid">
-<label>ライオン皮<input id="p0" type="number" min="0" value="12000"></label>
+.set{border:1px solid #e1e4ea;border-radius:12px;padding:11px;margin-top:8px}.sale-check{display:flex;align-items:center;gap:8px;margin-top:10px;padding:9px;border-radius:9px;background:#f7f8fb;font-weight:700}.sale-check input{width:20px;height:20px;margin:0}.set.sold{opacity:.58;background:#f2f2f2}.set.sold h3,.set.sold li{text-decoration:line-through}.progress{font-size:13px;color:#555;margin-top:5px}.set h3{margin:0 0 6px;font-size:16px}ul{margin:5px 0;padding-left:20px}.ok{font-weight:700}.bad{color:#b42318;font-weight:700}
+@media(max-width:480px){.wrap{padding:9px}.card{padding:12px}input{width:70px}}
+</style></head>
+<body><div class="wrap"><div class="card">
+<h1>🪙 70,000円コイン計算ツール</h1><p class="sub">個数を入力して「最適計算」。売却額やコイン獲得ラインを変更した場合も、このボタンで計算に反映されます。</p>
+<h2>⚙️ 売却額・コイン条件</h2><div class="settings"><div class="grid"><label>ライオン皮<input id="p0" type="number" min="0" value="12000"></label>
 <label>ライオン肉<input id="p1" type="number" min="0" value="7200"></label>
 <label>イノシシ皮<input id="p2" type="number" min="0" value="2160"></label>
 <label>イノシシ肉<input id="p3" type="number" min="0" value="1680"></label>
 <label>イノシシ牙<input id="p4" type="number" min="0" value="1920"></label>
 <label>シカ皮<input id="p5" type="number" min="0" value="1680"></label>
 <label>シカ肉<input id="p6" type="number" min="0" value="1200"></label>
-<label>シカ角<input id="p7" type="number" min="0" value="1680"></label>
-</div>
+<label>シカ角<input id="p7" type="number" min="0" value="1680"></label></div>
 <div class="line">🪙 コイン獲得ライン <input id="threshold" type="number" min="0" value="70000"> 円以上</div>
-<button onclick="resetSettings()">初期値に戻す</button>
-</div>
-
-<h2>📦 個数</h2>
-<table><thead><tr><th>アイテム</th><th>売却額</th><th>個数</th><th>小計</th></tr></thead><tbody>
-<tr><td>ライオン皮</td><td>12,000円</td><td><input id="q0" type="number" min="0" value="0"></td><td id="s0">0円</td></tr>
-<tr><td>ライオン肉</td><td>7,200円</td><td><input id="q1" type="number" min="0" value="0"></td><td id="s1">0円</td></tr>
-<tr><td>イノシシ皮</td><td>2,160円</td><td><input id="q2" type="number" min="0" value="0"></td><td id="s2">0円</td></tr>
-<tr><td>イノシシ肉</td><td>1,680円</td><td><input id="q3" type="number" min="0" value="0"></td><td id="s3">0円</td></tr>
-<tr><td>イノシシ牙</td><td>1,920円</td><td><input id="q4" type="number" min="0" value="0"></td><td id="s4">0円</td></tr>
-<tr><td>シカ皮</td><td>1,680円</td><td><input id="q5" type="number" min="0" value="0"></td><td id="s5">0円</td></tr>
-<tr><td>シカ肉</td><td>1,200円</td><td><input id="q6" type="number" min="0" value="0"></td><td id="s6">0円</td></tr>
-<tr><td>シカ角</td><td>1,680円</td><td><input id="q7" type="number" min="0" value="0"></td><td id="s7">0円</td></tr>
-</tbody></table>
-
-<div class="stats">
-<div class="stat"><div class="small">総額</div><div class="big" id="total">0円</div></div>
-<div class="stat"><div class="small">目安の最大セット数</div><div class="big" id="upper">0回</div></div>
-</div>
-
-<button class="primary" onclick="solve()">🪙 最適計算</button>
-<button onclick="makeNumbers()">数字8個を作る</button>
-<button onclick="clearAll()">クリア</button>
+<button onclick="resetSettings()">初期値に戻す</button></div>
+<h2>📦 個数</h2><table><thead><tr><th>アイテム</th><th>売却額</th><th>個数</th><th>小計</th></tr></thead><tbody><tr><td>ライオン皮</td><td id="v0">12,000円</td><td><input id="q0" type="number" min="0" value="0"></td><td id="s0">0円</td></tr>
+<tr><td>ライオン肉</td><td id="v1">7,200円</td><td><input id="q1" type="number" min="0" value="0"></td><td id="s1">0円</td></tr>
+<tr><td>イノシシ皮</td><td id="v2">2,160円</td><td><input id="q2" type="number" min="0" value="0"></td><td id="s2">0円</td></tr>
+<tr><td>イノシシ肉</td><td id="v3">1,680円</td><td><input id="q3" type="number" min="0" value="0"></td><td id="s3">0円</td></tr>
+<tr><td>イノシシ牙</td><td id="v4">1,920円</td><td><input id="q4" type="number" min="0" value="0"></td><td id="s4">0円</td></tr>
+<tr><td>シカ皮</td><td id="v5">1,680円</td><td><input id="q5" type="number" min="0" value="0"></td><td id="s5">0円</td></tr>
+<tr><td>シカ肉</td><td id="v6">1,200円</td><td><input id="q6" type="number" min="0" value="0"></td><td id="s6">0円</td></tr>
+<tr><td>シカ角</td><td id="v7">1,680円</td><td><input id="q7" type="number" min="0" value="0"></td><td id="s7">0円</td></tr></tbody></table>
+<div class="stats"><div class="stat"><div class="small">総額</div><div class="big" id="total">0円</div></div>
+<div class="stat"><div class="small">理論上の最大回数</div><div class="big" id="upper">0回</div></div></div>
+<button class="primary" onclick="solve()">🪙 設定を反映して最適計算</button><button onclick="makeNumbers()">数字8個を作る</button><button onclick="clearAll()">クリア</button>
 <textarea id="numbers" placeholder="数字8個を貼り付けてもOK&#10;例：44 44 20 20 40 10 10 20"></textarea>
-<button onclick="loadNumbers()">↑ 数字8個を入力</button>
-<div id="result"></div>
+<button onclick="loadNumbers()">↑ 数字8個を入力</button><div id="result"></div></div>
+<div class="card small"><b>入力順</b><br>①ライオン皮　②ライオン肉　③イノシシ皮　④イノシシ肉<br>⑤イノシシ牙　⑥シカ皮　⑦シカ肉　⑧シカ角</div>
 </div>
-
-<div class="card small"><b>入力順</b><br>
-①ライオン皮　②ライオン肉　③イノシシ皮　④イノシシ肉<br>
-⑤イノシシ牙　⑥シカ皮　⑦シカ肉　⑧シカ角
-</div>
-</div>
-
 <script>
-const NAMES=["ライオン皮","ライオン肉","イノシシ皮","イノシシ肉","イノシシ牙","シカ皮","シカ肉","シカ角"];
-const DEFAULT=[12000,7200,2160,1680,1920,1680,1200,1680];
-
+const NAMES=["ライオン皮", "ライオン肉", "イノシシ皮", "イノシシ肉", "イノシシ牙", "シカ皮", "シカ肉", "シカ角"],DEFAULT=[12000, 7200, 2160, 1680, 1920, 1680, 1200, 1680];
 function q(id){return document.getElementById(id)}
 function P(){return NAMES.map((_,i)=>Math.max(0,+q("p"+i).value||0))}
 function C(){return NAMES.map((_,i)=>Math.max(0,+q("q"+i).value||0))}
 function L(){return Math.max(0,+q("threshold").value||0)}
 function V(g,p=P()){return g.reduce((s,x,i)=>s+x*p[i],0)}
-
 function update(){
  let c=C(),p=P(),t=V(c,p);
- c.forEach((x,i)=>q("s"+i).textContent=(x*p[i]).toLocaleString()+"円");
+ c.forEach((x,i)=>{
+  q("v"+i).textContent=p[i].toLocaleString()+"円";
+  q("s"+i).textContent=(x*p[i]).toLocaleString()+"円";
+ });
  q("total").textContent=t.toLocaleString()+"円";
  q("upper").textContent=Math.floor(t/(L()||1))+"回";
 }
 document.querySelectorAll("input").forEach(x=>x.addEventListener("input",update));
-
-function resetSettings(){
- DEFAULT.forEach((x,i)=>q("p"+i).value=x);
- q("threshold").value=70000; update();
-}
-
+function resetSettings(){DEFAULT.forEach((x,i)=>q("p"+i).value=x);q("threshold").value=70000;update()}
 function loadNumbers(){
  const raw=q("numbers").value.trim();
- const normalized=raw
-   .replace(/[０-９]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0xfee0))
-   .replace(/[，、]/g,",")
-   .replace(/,/g," ");
+ const normalized=raw.replace(/[０-９]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0xfee0)).replace(/[，、]/g,",").replace(/,/g," ");
  const a=(normalized.match(/\d+(?:\.\d+)?/g)||[]).map(Number);
  if(a.length!==8){
-   q("result").innerHTML='<div class="set bad">数字を8個入れてね。<br>例：44 44 20 20 40 10 10 20</div>';
-   return;
+  q("result").innerHTML='<div class="set bad">数字を8個入れてね。<br>例：44 44 20 20 40 10 10 20</div>';
+  return;
  }
  a.forEach((x,i)=>q("q"+i).value=Math.max(0,Math.floor(x)));
  update();
- q("result").innerHTML='<div class="set"><span class="ok">8個の数字を読み込みました！</span><br>「最適計算」を押してね🪙</div>';
+ q("result").innerHTML='<div class="set"><span class="ok">8個の数字を読み込みました！</span><br>「設定を反映して最適計算」を押してね🪙</div>';
 }
-
 function makeNumbers(){q("numbers").value=C().join(" ")}
-
-function clearAll(){
- for(let i=0;i<8;i++)q("q"+i).value=0;
- q("numbers").value="";q("result").innerHTML="";update();
+function clearAll(){for(let i=0;i<8;i++)q("q"+i).value=0;q("numbers").value="";q("result").innerHTML="";update()}
+function verify(gs,init,p,min){if(gs.some(g=>V(g,p)<min))return false;let u=Array(8).fill(0);gs.forEach(g=>g.forEach((x,i)=>u[i]+=x));return u.every((x,i)=>x===init[i])}
+function build(init,k,p,min){
+ let gs=Array.from({length:k},()=>Array(8).fill(0)),s=Array(k).fill(0),ord=[0,1,4,2,3,5,7,6];
+ for(let type of ord){let n=init[type],b=Math.floor(n/k),r=n%k,idx=[...Array(k).keys()].sort((a,b)=>s[a]-s[b]);for(let j=0;j<k;j++){gs[idx[j]][type]=b;s[idx[j]]+=b*p[type]}for(let j=0;j<r;j++){gs[idx[j]][type]++;s[idx[j]]+=p[type]}}
+ if(verify(gs,init,p,min))return gs;
+ gs=Array.from({length:k},()=>Array(8).fill(0));s=Array(k).fill(0);let nodes=0,memo=new Set();
+ function rv(pos,r){let z=0;for(let a=pos;a<ord.length;a++)z+=r[ord[a]]*p[ord[a]];return z}
+ function rec(pos,r){if(++nodes>700000)return null;if(pos===ord.length)return verify(gs,init,p,min)?gs.map(x=>x.slice()):null;let d=s.reduce((z,x)=>z+(x<min?min-x:0),0);if(d>rv(pos,r))return null;let key=pos+"|"+r.join(",")+"|"+s.slice().sort((a,b)=>a-b).join(",");if(memo.has(key))return null;memo.add(key);let type=ord[pos],n=r[type],price=p[type],a=Array(k).fill(0),seen=new Set();
+ function dist(g,left){if(g===k-1){a[g]=left;let ns=s.slice();for(let j=0;j<k;j++)ns[j]+=a[j]*price;let sig=ns.slice().sort((x,y)=>x-y).join(",");if(seen.has(sig))return null;seen.add(sig);for(let j=0;j<k;j++){gs[j][type]=a[j];s[j]=ns[j]}let z=rec(pos+1,r);if(z)return z;for(let j=0;j<k;j++)s[j]-=a[j]*price;return null}let og=[...Array(k).keys()].sort((x,y)=>(min-s[y])-(min-s[x])),target=og[g];for(let x=0;x<=left;x++){a[target]=x;let z=dist(g+1,left-x);if(z)return z}return null}
+ return dist(0,n)}
+ return rec(0,init.slice())
 }
-
-/*
-  1セットの中で「ライン以上」かつ「ラインとの差が最小」の組み合わせを、
-  有限個数の範囲で探す。各価格は円単位で扱うが、計算量を抑えるため
-  上限は「ライン + 最高単価 - 1」までにする。
-*/
 function bestOneSet(rem,p,min){
  if(min<=0)return null;
  const maxP=Math.max(...p);
  const limit=min+maxP-1;
  const dp=Array(limit+1).fill(null);
  dp[0]=Array(8).fill(0);
-
- // bounded knapsack。各アイテムを残数まで使える。
  for(let i=0;i<8;i++){
-   const price=p[i], count=rem[i];
-   if(price<=0||count<=0)continue;
-   const next=dp.map(x=>x?x.slice():null);
-   for(let sum=0;sum<=limit;sum++){
-     if(!dp[sum])continue;
-     for(let n=1;n<=count;n++){
-       const ns=sum+price*n;
-       if(ns>limit)break;
-       if(!next[ns]){
-         const a=dp[sum].slice(); a[i]=n; next[ns]=a;
-       }
-     }
+  const price=p[i],count=rem[i];
+  if(price<=0||count<=0)continue;
+  const next=dp.map(x=>x?x.slice():null);
+  for(let sum=0;sum<=limit;sum++){
+   if(!dp[sum])continue;
+   for(let n=1;n<=count;n++){
+    const ns=sum+price*n;
+    if(ns>limit)break;
+    if(!next[ns]){
+     const a=dp[sum].slice();a[i]=n;next[ns]=a;
+    }
    }
-   for(let s=0;s<=limit;s++)dp[s]=next[s];
+  }
+  for(let s=0;s<=limit;s++)dp[s]=next[s];
  }
- for(let s=min;s<=limit;s++){
-   if(dp[s])return {g:dp[s],value:s};
- }
+ for(let s=min;s<=limit;s++)if(dp[s])return {g:dp[s],value:s};
  return null;
 }
 
@@ -185,44 +118,35 @@ function solve(){
  const init=C(),p=P(),min=L();
  const total=V(init,p);
  if(total<min){
-   q("result").innerHTML='<div class="set bad">総額がコイン獲得ラインに届きません。</div>';
-   return;
+  q("result").innerHTML='<div class="set bad">総額がコイン獲得ラインに届きません。</div>';
+  return;
  }
-
  let rem=init.slice(),sets=[];
- // 毎回「70,000円以上で最も近い組み合わせ」を選ぶ。
- // 余りは使わず、そのまま残す。
  while(V(rem,p)>=min){
-   const one=bestOneSet(rem,p,min);
-   if(!one)break;
-   sets.push(one);
-   for(let i=0;i<8;i++)rem[i]-=one.g[i];
+  const one=bestOneSet(rem,p,min);
+  if(!one)break;
+  sets.push(one);
+  for(let i=0;i<8;i++)rem[i]-=one.g[i];
  }
-
  if(!sets.length){
-   q("result").innerHTML='<div class="set bad">組み合わせを見つけられませんでした。</div>';
-   return;
+  q("result").innerHTML='<div class="set bad">組み合わせを見つけられませんでした。</div>';
+  return;
  }
-
- let out='<div class="result-head"><b>🪙 '+sets.length+'セット</b>'+
-   '<div class="progress">各セットは「'+min.toLocaleString()+
-   '円以上」で、できるだけ'+min.toLocaleString()+'円に近い組み合わせです。</div></div>';
-
+ let out='<div class="set"><b>🪙 '+sets.length+'セット</b>'+
+  '<div class="progress">各セットは「'+min.toLocaleString()+'円以上」で、できるだけ'+min.toLocaleString()+'円に近い組み合わせです。余ったアイテムは残します。</div></div>';
  sets.forEach((one,i)=>{
-   const key="coin-sold-"+i;
-   out+='<div class="set" id="set-'+i+'">';
-   out+='<h3>🪙 '+(i+1)+'セット目：'+one.value.toLocaleString()+'円</h3><ul>';
-   one.g.forEach((x,j)=>{if(x)out+='<li>'+NAMES[j]+' × '+x+'</li>'});
-   out+='</ul>';
-   out+='<label class="sale-check"><input type="checkbox" onchange="toggleSold('+i+',this.checked)"> 売却済み</label>';
-   out+='</div>';
+  out+='<div class="set" id="set-'+i+'">';
+  out+='<h3>🪙 '+(i+1)+'セット目：'+one.value.toLocaleString()+'円</h3><ul>';
+  one.g.forEach((x,j)=>{if(x)out+='<li>'+NAMES[j]+' × '+x+'</li>'});
+  out+='</ul>';
+  out+='<label class="sale-check"><input type="checkbox" onchange="toggleSold('+i+',this.checked)"> 売却済み</label>';
+  out+='</div>';
  });
  out+='<div class="set"><b>📦 残り</b><ul>';
  let remainValue=V(rem,p);
  rem.forEach((x,i)=>{if(x)out+='<li>'+NAMES[i]+' × '+x+'</li>'});
  if(rem.every(x=>x===0))out+='<li>なし</li>';
  out+='</ul><b>残り合計：'+remainValue.toLocaleString()+'円</b></div>';
-
  q("result").innerHTML=out;
 }
 
@@ -233,6 +157,4 @@ function toggleSold(i,checked){
 }
 
 update();
-</script>
-</body>
-</html>
+</script></body></html>
