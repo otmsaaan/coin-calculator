@@ -157,4 +157,96 @@ function toggleSold(i,checked){
 }
 
 update();
-</script></body></html>
+</script>
+<script id="local-save-layer">
+(function(){
+  const STORAGE_KEY="coin-calculator-settings-v2";
+
+  function getState(){
+    return {
+      prices: P(),
+      threshold: L(),
+      counts: C(),
+      numbers: q("numbers").value,
+      sold: [...document.querySelectorAll("#result .sale-check input")].map(x=>x.checked)
+    };
+  }
+
+  function saveState(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(getState()));
+    }catch(e){}
+  }
+
+  function restoreState(){
+    try{
+      const raw=localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const data=JSON.parse(raw);
+
+      if(Array.isArray(data.prices)){
+        data.prices.slice(0,8).forEach((v,i)=>q("p"+i).value=Math.max(0,+v||0));
+      }
+      if(data.threshold!=null) q("threshold").value=Math.max(0,+data.threshold||0);
+      if(Array.isArray(data.counts)){
+        data.counts.slice(0,8).forEach((v,i)=>q("q"+i).value=Math.max(0,Math.floor(+v||0)));
+      }
+      if(typeof data.numbers==="string") q("numbers").value=data.numbers;
+
+      update();
+      return data.sold || [];
+    }catch(e){
+      return [];
+    }
+  }
+
+  function restoreSold(sold){
+    if(!Array.isArray(sold)) return;
+    document.querySelectorAll("#result .sale-check input").forEach((box,i)=>{
+      if(sold[i]){
+        box.checked=true;
+        const set=q("set-"+i);
+        if(set) set.classList.add("sold");
+      }
+    });
+  }
+
+  // Save whenever the user changes any setting/input.
+  document.addEventListener("input", function(e){
+    if(e.target.matches("input, textarea")) saveState();
+  });
+
+  document.addEventListener("change", function(e){
+    if(e.target.matches("input, textarea")) saveState();
+  });
+
+  // Keep the existing "売却済み" function, but also persist the checkbox.
+  if(typeof window.toggleSold==="function"){
+    const originalToggle=window.toggleSold;
+    window.toggleSold=function(i,checked){
+      originalToggle(i,checked);
+      saveState();
+    };
+  }
+
+  // Restore saved settings whenever the page opens.
+  const savedSold=restoreState();
+
+  // If a calculation is made, restore the saved sold states for the new result.
+  if(typeof window.solve==="function"){
+    const originalSolve=window.solve;
+    window.solve=function(){
+      originalSolve();
+      setTimeout(()=>{
+        restoreSold(savedSold);
+        saveState();
+      },50);
+    };
+  }
+
+  // Also save before the page/app is closed.
+  window.addEventListener("pagehide", saveState);
+})();
+</script>
+
+</body></html>
