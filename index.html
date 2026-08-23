@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#222222">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="コイン計算">
+<link rel="manifest" href="manifest.webmanifest">
 <title>70,000円コイン計算ツール</title>
 <style>
 *{box-sizing:border-box}
@@ -119,9 +124,19 @@ function resetSettings(){
 }
 
 function loadNumbers(){
- let a=(q("numbers").value.match(/\d+/g)||[]).map(Number);
- if(a.length!==8)return alert("数字を8個入れてね。");
- a.forEach((x,i)=>q("q"+i).value=x); update();
+ const raw=q("numbers").value.trim();
+ const normalized=raw
+   .replace(/[０-９]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0xfee0))
+   .replace(/[，、]/g,",")
+   .replace(/,/g," ");
+ const a=(normalized.match(/\d+(?:\.\d+)?/g)||[]).map(Number);
+ if(a.length!==8){
+   q("result").innerHTML='<div class="set bad">数字を8個入れてね。<br>例：44 44 20 20 40 10 10 20</div>';
+   return;
+ }
+ a.forEach((x,i)=>q("q"+i).value=Math.max(0,Math.floor(x)));
+ update();
+ q("result").innerHTML='<div class="set"><span class="ok">8個の数字を読み込みました！</span><br>「最適計算」を押してね🪙</div>';
 }
 
 function makeNumbers(){q("numbers").value=C().join(" ")}
