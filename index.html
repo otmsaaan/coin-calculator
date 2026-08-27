@@ -75,18 +75,24 @@ function loadNumbers(){
  q("result").innerHTML='<div class="set"><span class="ok">8個の数字を読み込みました！</span><br>「設定を反映して最適計算」を押してね🪙</div>';
 }
 function makeNumbers(){q("numbers").value=C().join(" ")}
-function clearAll(){for(let i=0;i<8;i++)q("q"+i).value=0;q("numbers").value="";q("result").innerHTML="";update()}
-function verify(gs,init,p,min){if(gs.some(g=>V(g,p)<min))return false;let u=Array(8).fill(0);gs.forEach(g=>g.forEach((x,i)=>u[i]+=x));return u.every((x,i)=>x===init[i])}
-function build(init,k,p,min){
- let gs=Array.from({length:k},()=>Array(8).fill(0)),s=Array(k).fill(0),ord=[0,1,4,2,3,5,7,6];
- for(let type of ord){let n=init[type],b=Math.floor(n/k),r=n%k,idx=[...Array(k).keys()].sort((a,b)=>s[a]-s[b]);for(let j=0;j<k;j++){gs[idx[j]][type]=b;s[idx[j]]+=b*p[type]}for(let j=0;j<r;j++){gs[idx[j]][type]++;s[idx[j]]+=p[type]}}
- if(verify(gs,init,p,min))return gs;
- gs=Array.from({length:k},()=>Array(8).fill(0));s=Array(k).fill(0);let nodes=0,memo=new Set();
- function rv(pos,r){let z=0;for(let a=pos;a<ord.length;a++)z+=r[ord[a]]*p[ord[a]];return z}
- function rec(pos,r){if(++nodes>700000)return null;if(pos===ord.length)return verify(gs,init,p,min)?gs.map(x=>x.slice()):null;let d=s.reduce((z,x)=>z+(x<min?min-x:0),0);if(d>rv(pos,r))return null;let key=pos+"|"+r.join(",")+"|"+s.slice().sort((a,b)=>a-b).join(",");if(memo.has(key))return null;memo.add(key);let type=ord[pos],n=r[type],price=p[type],a=Array(k).fill(0),seen=new Set();
- function dist(g,left){if(g===k-1){a[g]=left;let ns=s.slice();for(let j=0;j<k;j++)ns[j]+=a[j]*price;let sig=ns.slice().sort((x,y)=>x-y).join(",");if(seen.has(sig))return null;seen.add(sig);for(let j=0;j<k;j++){gs[j][type]=a[j];s[j]=ns[j]}let z=rec(pos+1,r);if(z)return z;for(let j=0;j<k;j++)s[j]-=a[j]*price;return null}let og=[...Array(k).keys()].sort((x,y)=>(min-s[y])-(min-s[x])),target=og[g];for(let x=0;x<=left;x++){a[target]=x;let z=dist(g+1,left-x);if(z)return z}return null}
- return dist(0,n)}
- return rec(0,init.slice())
+function clearAll(){
+ for(let i=0;i<8;i++)q("q"+i).value=0;
+ q("numbers").value="";
+ q("result").innerHTML="";
+ // クリアしたら、保存されている「売却済み」状態もリセット
+ try{
+   const raw=localStorage.getItem("coin-calculator-settings-v2");
+   if(raw){
+     const data=JSON.parse(raw);
+     data.counts=C();
+     data.numbers="";
+     data.sold=[];
+     localStorage.setItem("coin-calculator-settings-v2",JSON.stringify(data));
+   }else{
+     localStorage.removeItem("coin-calculator-settings-v2");
+   }
+ }catch(e){}
+ update();
 }
 function bestOneSet(rem,p,min){
  if(min<=0)return null;
