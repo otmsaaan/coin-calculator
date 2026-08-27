@@ -16,8 +16,8 @@ button{border:0;border-radius:10px;padding:10px 13px;margin:10px 5px 0 0;font-we
 textarea{width:100%;min-height:70px;margin-top:10px;padding:9px;border:1px solid #ccc;border-radius:10px;font:14px system-ui}
 .set{border:1px solid #e1e4ea;border-radius:12px;padding:11px;margin-top:8px}.sale-check{display:flex;align-items:center;gap:8px;margin-top:10px;padding:9px;border-radius:9px;background:#f7f8fb;font-weight:700}.sale-check input{width:20px;height:20px;margin:0}.set.sold{opacity:.58;background:#f2f2f2}.set.sold h3,.set.sold li{text-decoration:line-through}.progress{font-size:13px;color:#555;margin-top:5px}.set h3{margin:0 0 6px;font-size:16px}ul{margin:5px 0;padding-left:20px}
 .material-row{display:flex;align-items:center;gap:7px;list-style:none;margin-left:-20px;padding:4px 0}
-.material-tag{display:inline-block;min-width:52px;padding:3px 6px;border-radius:7px;background:#f0f2f6;font-size:15px;font-weight:900;text-align:center}
-.animal{font-size:15px}
+.material-tag{display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:32px;padding:2px 7px;border:2px solid #777;border-radius:8px;background:#fff;font-size:16px;font-weight:900;text-align:center;letter-spacing:.03em}
+.material-tag.skin{background:repeating-linear-gradient(135deg,#f4eadf 0,#f4eadf 5px,#fff 5px,#fff 9px)}.material-tag.meat{background:repeating-linear-gradient(135deg,#f8e5e5 0,#f8e5e5 5px,#fff 5px,#fff 9px)}.material-tag.fang{background:repeating-linear-gradient(135deg,#e9eef7 0,#e9eef7 5px,#fff 5px,#fff 9px)}.material-tag.horn{background:repeating-linear-gradient(135deg,#e8eee7 0,#e8eee7 5px,#fff 5px,#fff 9px)}.animal{font-size:15px}
 .qty{margin-left:auto;font-size:17px;font-weight:900;white-space:nowrap}.ok{font-weight:700}.bad{color:#b42318;font-weight:700}
 @media(max-width:480px){.wrap{padding:9px}.card{padding:12px}input{width:70px}}
 </style></head>
@@ -151,8 +151,9 @@ function solve(){
       if(x){
         const animal=["🦁","🦁","🐗","🐗","🐗","🦌","🦌","🦌"][j];
         const material=["皮","肉","皮","肉","牙","皮","肉","角"][j];
+        const materialClass={皮:'skin',肉:'meat',牙:'fang',角:'horn'}[material];
         const animalName=NAMES[j].replace(material,"");
-        out+='<li class="material-row"><span class="material-tag">【'+material+'】</span><span class="animal">'+animal+' '+animalName+'</span><span class="qty">× '+x+'</span></li>';
+        out+='<li class="material-row"><span class="material-tag '+materialClass+'">【'+material+'】</span><span class="animal">'+animal+' '+animalName+'</span><span class="qty">× '+x+'</span></li>';
       }
     });
   out+='</ul>';
@@ -165,8 +166,9 @@ function solve(){
    if(x){
      const animal=["🦁","🦁","🐗","🐗","🐗","🦌","🦌","🦌"][i];
      const material=["皮","肉","皮","肉","牙","皮","肉","角"][i];
+     const materialClass={皮:'skin',肉:'meat',牙:'fang',角:'horn'}[material];
      const animalName=NAMES[i].replace(material,"");
-     out+='<li class="material-row"><span class="material-tag">【'+material+'】</span><span class="animal">'+animal+' '+animalName+'</span><span class="qty">× '+x+'</span></li>';
+     out+='<li class="material-row"><span class="material-tag '+materialClass+'">【'+material+'】</span><span class="animal">'+animal+' '+animalName+'</span><span class="qty">× '+x+'</span></li>';
    }
  });
  if(rem.every(x=>x===0))out+='<li>なし</li>';
